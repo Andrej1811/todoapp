@@ -64,8 +64,10 @@ export const useTodoStore = defineStore('todo', () => {
     }
 
     const removeTodo = (id) => {
-        todos.value = todos.value.filter(t => t.id !== id)
-        localStorageComposable.updateTodoInLocalStorage(todos.value)
+        if (window.confirm('Naozaj chcete vymazať túto úlohu?')) {
+            todos.value = todos.value.filter(t => t.id !== id)
+            localStorageComposable.updateTodoInLocalStorage(todos.value)
+        }
     }
 
     return {
