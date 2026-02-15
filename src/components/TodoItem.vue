@@ -9,7 +9,11 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['toggle', 'remove', 'update'])
+const emit = defineEmits([
+  'toggle', 
+  'remove', 
+  'update'
+])
 
 const isEditing = ref(false)
 const editedTitle = ref('')
@@ -26,6 +30,7 @@ const saveEdit = () => {
   if (!isEditing.value) return
   
   const trimmed = editedTitle.value.trim()
+
   if (trimmed && trimmed !== props.todo.title) {
     emit('update', props.todo.id, trimmed)
   }

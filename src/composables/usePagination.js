@@ -5,9 +5,15 @@ export function usePagination(items, itemsPerPage = 10)
     const currentPage = ref(1)
     const perPage = ref(itemsPerPage)
 
-    const totalPages = computed(() => Math.ceil(items.value.length / perPage.value))
+    const totalPages = computed(() => {
+        const length = Array.isArray(items.value) ? items.value.length : 0
+
+        return Math.ceil(length / perPage.value)
+    })
 
     const paginatedItems = computed(() => {
+        if (!Array.isArray(items.value)) return []
+
         const start = (currentPage.value - 1) * perPage.value
         const end = start + perPage.value
 
@@ -18,7 +24,7 @@ export function usePagination(items, itemsPerPage = 10)
         const total = totalPages.value
         const current = currentPage.value
 
-        // number of pages to show around current page
+        // počet stránok naokolo aktuálnej stránky
         const delta = 1
 
         if (total <= 7) {
@@ -30,14 +36,11 @@ export function usePagination(items, itemsPerPage = 10)
             range.push(i)
         }
 
-        if (current - delta > 2) {
-            range.unshift('...')
-        }
+        if (current - delta > 2) range.unshift('...')
+
         range.unshift(1)
 
-        if (current + delta < total - 1) {
-            range.push('...')
-        }
+        if (current + delta < total - 1) range.push('...')  
         
         range.push(total)
 

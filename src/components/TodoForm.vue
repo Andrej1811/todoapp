@@ -9,7 +9,9 @@ const store = useTodoStore()
 const title = ref('')
 
 const handleSubmit = () => {
-    if (title.value.trim()) {
+
+    if (title.value.trim()) 
+    {
         store.addTodo(title.value.trim())
         router.push('/')
     }
