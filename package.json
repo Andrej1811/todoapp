@@ -10,13 +10,19 @@
     "test:unit": "vitest"
   },
   "dependencies": {
+    "lucide-vue-next": "^0.564.0",
     "pinia": "^3.0.4",
-    "vue": "beta"
+    "vue": "beta",
+    "vue-router": "^4.6.4"
   },
   "devDependencies": {
+    "@tailwindcss/vite": "^4.1.18",
     "@vitejs/plugin-vue": "^6.0.3",
     "@vue/test-utils": "^2.4.6",
+    "autoprefixer": "^10.4.24",
     "jsdom": "^27.4.0",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.18",
     "vite": "beta",
     "vite-plugin-vue-devtools": "^8.0.5",
     "vitest": "^4.0.18"
