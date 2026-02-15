@@ -15,7 +15,7 @@ import EmptyState from './states/EmptyState.vue'
 
 const route = useRoute()
 const todoStore = useTodoStore()
-const { todos, isLoading, errorMessage } = storeToRefs(todoStore)
+const { todos, isLoading, errorMessage, uncompletedCount } = storeToRefs(todoStore)
 const { toggleTodo, removeTodo, updateTodo, fetchTodos } = todoStore
 
 const filterTodos = (items, status) => {
@@ -123,7 +123,7 @@ onMounted( () => fetchTodos())
         <!-- PAGINATION START -->
         <div class="px-6 py-4 bg-indigo-50/30 border-t border-indigo-50/50 flex flex-col sm:flex-row justify-between items-center gap-4 shrink-0">
             <div class="text-xs font-semibold text-indigo-400 text-center sm:text-left">
-                <span>{{ filteredTodos.length }} úloh ({{ todos.filter(t => !t.completed).length }} ostáva)</span>
+                <span>{{ filteredTodos.length }} úloh ({{ uncompletedCount }} ostáva)</span>
             </div>
             
             <Pagination 

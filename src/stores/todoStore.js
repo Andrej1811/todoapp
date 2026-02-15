@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { api } from '@/services/todoListAPI'
 import { useLocalStorage } from '@/composables/useLocalStorage'
 
@@ -9,6 +9,12 @@ export const useTodoStore = defineStore('todo', () => {
     const isLoading = ref(false)
     const errorMessage = ref('')
     const localStorageComposable = useLocalStorage()
+
+    const totalCount = computed(() => todos.value.length)
+    const completedCount = computed(() => todos.value.filter(t => t.completed).length)
+    const uncompletedCount = computed(() => todos.value.filter(t => !t.completed).length)
+    const completedTodos = computed(() => todos.value.filter(t => t.completed))
+    const uncompletedTodos = computed(() => todos.value.filter(t => !t.completed))
 
     const fetchTodos = async () => {
 
@@ -74,6 +80,11 @@ export const useTodoStore = defineStore('todo', () => {
         todos,
         isLoading,
         errorMessage,
+        totalCount,
+        completedCount,
+        uncompletedCount,
+        completedTodos,
+        uncompletedTodos,
         addTodo,
         toggleTodo,
         removeTodo,
