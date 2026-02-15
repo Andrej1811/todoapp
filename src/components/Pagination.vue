@@ -9,6 +9,10 @@ const props = defineProps({
     totalPages: {
         type: Number,
         required: true
+    },
+    pages: {
+        type: Array,
+        required: true
     }
 })
 
@@ -26,7 +30,11 @@ const prevPage = () => {
     }
 }
 
-const setPage = (page) => emit('update:modelValue', page)
+const setPage = (page) => {
+    if (page !== '...') {
+        emit('update:modelValue', page)
+    }
+}
 </script>
 
 <template>
@@ -39,16 +47,20 @@ const setPage = (page) => emit('update:modelValue', page)
             <ChevronLeft class="w-4 h-4" />
         </button>
         
-        <div class="flex gap-1">
-            <button 
-                v-for="page in totalPages" 
-                :key="page"
-                @click="setPage(page)"
-                class="w-8 h-8 rounded-lg text-xs font-bold transition-all"
-                :class="modelValue === page ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200' : 'text-indigo-400 hover:bg-indigo-50'"
-            >
-                {{ page }}
-            </button>
+        <div class="flex gap-1 items-center">
+            <template v-for="(page, index) in pages" :key="index">
+                <span v-if="page === '...'" class="px-1 text-indigo-300 font-bold">
+                    {{ page }}
+                </span>
+                <button 
+                    v-else
+                    @click="setPage(page)"
+                    class="w-8 h-8 rounded-lg text-xs font-bold transition-all"
+                    :class="modelValue === page ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200' : 'text-indigo-400 hover:bg-indigo-50'"
+                >
+                    {{ page }}
+                </button>
+            </template>
         </div>
 
         <button 

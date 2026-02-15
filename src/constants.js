@@ -1,7 +1,7 @@
 export const constants = {
 
     api: {
-        todoUrl: 'https://jsonplaceholder.typicode.com/todos'
+        todoListUrl: 'https://jsonplaceholder.typicode.com/todos'
     },
 
     pagination: {

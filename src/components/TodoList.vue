@@ -1,21 +1,28 @@
 <script setup>
-import { CheckCircle2 } from 'lucide-vue-next'
-import TodoItem from './TodoItem.vue'
-import Pagination from './Pagination.vue'
-import { useTodoStore } from '@/stores/todo'
+import { onMounted } from 'vue'
+import { useTodoStore } from '@/stores/todoStore'
 import { storeToRefs } from 'pinia'
 import { usePagination } from '@/composables/usePagination'
 import { constants } from '@/constants'
 
+import TodoItem from './TodoItem.vue'
+import Pagination from './Pagination.vue'
+import LoadingState from './states/LoadingState.vue'
+import ErrorState from './states/ErrorState.vue'
+import EmptyState from './states/EmptyState.vue'
+
 const todoStore = useTodoStore()
-const { todos } = storeToRefs(todoStore)
-const { toggleTodo, removeTodo, updateTodo } = todoStore
+const { todos, isLoading, errorMessage } = storeToRefs(todoStore)
+const { toggleTodo, removeTodo, updateTodo, fetchTodos } = todoStore
 
 const { 
     currentPage, 
     totalPages, 
+    pages,
     paginatedItems: paginatedTodos 
 } = usePagination(todos, constants.pagination.itemsPerPage)
+
+onMounted( () => fetchTodos())
 </script>
 
 <template>
@@ -31,33 +38,41 @@ const {
         </div>
         
         <!-- TODO LIST START -->
-        <div v-if="todos.length > 0" class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-                <thead class="bg-indigo-50/20 text-indigo-900/40 text-[10px] uppercase tracking-widest font-bold">
-                    <tr>
-                        <th class="px-6 py-3 w-16">Status</th>
-                        <th class="px-6 py-3">Názov úlohy</th>
-                        <th class="px-6 py-3 w-24 text-right">Akcie</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-indigo-50/50">
-                    <TodoItem 
-                        v-for="todo in paginatedTodos" 
-                        :key="todo.id" 
-                        :todo="todo"
-                        @toggle="toggleTodo"
-                        @remove="removeTodo"
-                        @update="updateTodo"
-                    />
-                </tbody>
-            </table>
-        </div>
+        <div class="overflow-x-auto">
 
-        <div v-else class="px-6 py-12 text-center border-b border-indigo-50/50">
-            <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-400 mb-4">
-                <CheckCircle2 class="w-6 h-6" />
-            </div>
-            <p class="text-slate-500 font-medium">Všetko je hotové! 🎉</p>
+            <template v-if="isLoading">
+                <LoadingState />
+            </template>
+
+            <template v-else-if="errorMessage">
+                <ErrorState />
+            </template>
+
+            <template v-else-if="todos.length === 0">
+                <EmptyState />
+            </template>
+
+            <template v-else>
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-indigo-50/20 text-indigo-900/40 text-[10px] uppercase tracking-widest font-bold">
+                        <tr>
+                            <th class="px-6 py-3 w-16">Status</th>
+                            <th class="px-6 py-3">Názov úlohy</th>
+                            <th class="px-6 py-3 w-24 text-right">Akcie</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-indigo-50/50">
+                        <TodoItem 
+                            v-for="todo in paginatedTodos" 
+                            :key="todo.id" 
+                            :todo="todo"
+                            @toggle="toggleTodo"
+                            @remove="removeTodo"
+                            @update="updateTodo"
+                        />
+                    </tbody>
+                </table>
+            </template>
         </div>
         <!-- TODO LIST END -->
 
@@ -71,6 +86,7 @@ const {
             <Pagination 
                 v-model="currentPage" 
                 :total-pages="totalPages" 
+                :pages="pages"
             />
         </div>
         <!-- PAGINATION END -->
